@@ -13,24 +13,47 @@ var meshblu = new MeshbluSocketIO({
 var responses = {};
 
 meshblu.on("ready", function(response) {
-  console.log(response);
   if (!meshblu.uuid) {
     meshblu.uuid = response.uuid;
     meshblu.token = response.token;
   }
+
   const uuid = response.uuid;
-  console.log(uuid);
+
   if (responses[uuid]) {
     responses[uuid].forEach((info, i) => {
-      var updateValues = {
-        uuid: info.thingUuid,
-        set_data: [
-          {
-            sensor_id: parseInt(info.itemId),
-            value: parseInt(info.itemData)
-          }
-        ]
-      };
+      var updateValues = {};
+      if (info.itemData === "true") {
+        updateValues = {
+          uuid: info.thingUuid,
+          set_data: [
+            {
+              sensor_id: parseInt(info.itemId),
+              value: true
+            }
+          ]
+        };
+      } else if (info.itemData === "false") {
+        updateValues = {
+          uuid: info.thingUuid,
+          set_data: [
+            {
+              sensor_id: parseInt(info.itemId),
+              value: false
+            }
+          ]
+        };
+      } else {
+        updateValues = {
+          uuid: info.thingUuid,
+          set_data: [
+            {
+              sensor_id: parseInt(info.itemId),
+              value: parseInt(info.itemData)
+            }
+          ]
+        };
+      }
       meshblu.update(updateValues, function(response) {
         info.res.send(response);
         delete responses[uuid][i];
@@ -40,7 +63,6 @@ meshblu.on("ready", function(response) {
 });
 
 meshblu.on("notReady", function(response) {
-  console.log(response);
   const uuid = response.uuid;
   if (responses[uuid]) {
     responses[uuid].forEach((info, i) => {
@@ -51,7 +73,6 @@ meshblu.on("notReady", function(response) {
 });
 /* GET Devices from a gateway. */
 router.post("/", function(req, res, next) {
-  console.log(req.body);
   const hostname = req.body.hostname;
   const port = req.body.port;
   const uuid = req.body.ownerUuid;
@@ -60,14 +81,10 @@ router.post("/", function(req, res, next) {
   const itemId = req.body.itemId;
   const itemData = req.body.itemData;
 
-  if (
-    uuid === "" ||
-    token === "" ||
-    thingUuid === "" ||
-    itemId === "" ||
-    itemData === ""
-  )
+  if (uuid === "" || token === "" || thingUuid === "" || itemId === ""
+    || itemData === "")
     res.send({ status: "Please provide all required values." });
+
   meshblu["_options"].hostname = hostname;
   meshblu["_options"].port = port;
   meshblu["_options"].uuid = uuid;

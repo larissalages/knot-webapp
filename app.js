@@ -12,7 +12,6 @@ var httpGetDevices = require('./routes/httpGetDevices');
 var setData = require('./routes/setData');
 var getData = require('./routes/getData');
 var sendConfig = require('./routes/sendConfig');
-var subscribe = require("./routes/subscribe");
 var httpGetData = require('./routes/httpGetData');
 var httpSetData = require('./routes/httpSetData');
 var httpSendConfig = require('./routes/httpSendConfig');
@@ -22,6 +21,7 @@ var app = express();
 var io = socketio();
 app.io = io;
 var httpSubscribe = require('./routes/httpSubscribe')(io);
+var subscribe = require("./routes/subscribe")(io);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

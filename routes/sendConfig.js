@@ -13,15 +13,16 @@ var meshblu = new MeshbluSocketIO({
 var responses = {};
 
 meshblu.on("ready", function(response) {
-  console.log(response);
   if (!meshblu.uuid) {
     meshblu.uuid = response.uuid;
     meshblu.token = response.token;
   }
+
   const uuid = response.uuid;
+
   if (responses[uuid]) {
     responses[uuid].forEach((info, i) => {
-      var updateValues = {
+            var updateValues = {
         uuid: info.thingUuid,
         config: [
           {
@@ -42,7 +43,6 @@ meshblu.on("ready", function(response) {
 });
 
 meshblu.on("notReady", function(response) {
-  console.log(response);
   const uuid = response.uuid;
   if (responses[uuid]) {
     responses[uuid].forEach((info, i) => {
@@ -51,9 +51,8 @@ meshblu.on("notReady", function(response) {
     });
   }
 });
-/* Send config to a device. */
+/* GET Devices from a gateway. */
 router.post("/", function(req, res, next) {
-  console.log(req.body);
   const hostname = req.body.hostname;
   const port = req.body.port;
   const uuid = req.body.ownerUuid;

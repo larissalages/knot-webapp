@@ -40,10 +40,13 @@ router.post("/", function(req, res, next) {
       ]
     };
   }
+
+  const urll = "http://" + hostname + ":" + port + "/devices/" + thingUuid;
+  console.log(urll);
   request(
     {
       method: "PUT",
-      url: "http://" + hostname + ":" + port + "/devices/" + thingUuid,
+      url: urll,
       body: updateValues,
       json: true,
       headers: {

@@ -21,8 +21,8 @@ class App extends Component {
 
     this.state = {
       defaultConfigs: {
-        ownerUuid: "",
-        ownerToken: "",
+        ownerUuid: "e169f343-3c38-4655-8775-dc2e216d0000",
+        ownerToken: "b66885e3d22127fbc2c2ca92b96384c495b19513",
         hostname: "knot.local",
         port: "3000"
       },
@@ -104,7 +104,7 @@ class App extends Component {
       lowerLimit: this.state.setConfig.lowerLimit,
       upperLimit: this.state.setConfig.upperLimit
     };
-    fetch("/httpSendConfig", {
+    fetch("/sendConfig", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -134,7 +134,7 @@ class App extends Component {
       itemId: this.state.setData.itemId,
       itemData: this.state.setData.itemData
     };
-    fetch("/httpSetData", {
+    fetch("/setData", {
       method: "POST",
       headers: {
         Accept: "application/json",
