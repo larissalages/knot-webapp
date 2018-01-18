@@ -21,9 +21,9 @@ class App extends Component {
 
     this.state = {
       defaultConfigs: {
-        ownerUuid: "e169f343-3c38-4655-8775-dc2e216d0000",
-        ownerToken: "b66885e3d22127fbc2c2ca92b96384c495b19513",
-        hostname: "knot.local",
+        ownerUuid: "",
+        ownerToken: "",
+        hostname: "knot-test.cesar.org.br",
         port: "3000"
       },
       setConfig: {
@@ -42,6 +42,7 @@ class App extends Component {
         response: ""
       },
       getData: { thingUuid: "", itemId: "", response: "" },
+      readData: { thingUuid: "", response: "" },
       getDevices: { gateway: "", response: "" },
       subscribe: { thingUuid: "", response: "" },
       isOn: false,
@@ -57,6 +58,8 @@ class App extends Component {
     this._onChangeDefaultConfigs = this._onChangeDefaultConfigs.bind(this);
     this._onChangeSubscribe = this._onChangeSubscribe.bind(this);
     this.subscribe = this.subscribe.bind(this);
+    this._onChangeReadData = this._onChangeReadData.bind(this);
+    this.readData = this.readData.bind(this);
   }
 
   _onChangeSetConfig = function(e) {
@@ -89,6 +92,11 @@ class App extends Component {
     const subscribe = this.state.subscribe;
     subscribe[e.target.name] = e.target.value;
     this.setState({ subscribe: subscribe });
+  };
+  _onChangeReadData = function(e) {
+    const readData = this.state.readData;
+    readData[e.target.name] = e.target.value;
+    this.setState({ readData: readData });
   };
   setConfig = function(e) {
     const setConfig = this.state.setConfig;
@@ -203,6 +211,7 @@ class App extends Component {
       .then(
         function(json) {
           var resp = [];
+          console.log(json);
           for (var i in json.body.devices) {
             var device = json.body.devices[i];
             resp[i] = {
@@ -244,6 +253,35 @@ class App extends Component {
       this.setState({ subscribe: subscribe });
     }.bind(this));
     socket.emit('httpSubscribe', request);
+    e.preventDefault();
+  };
+
+  readData = function(e) {
+    const readData = this.state.readData;
+    const request = {
+      ownerUuid: this.state.defaultConfigs.ownerUuid,
+      ownerToken: this.state.defaultConfigs.ownerToken,
+      hostname: this.state.defaultConfigs.hostname,
+      port: this.state.defaultConfigs.port,
+      thingUuid: this.state.readData.thingUuid,
+      itemId: this.state.readData.itemId
+    };
+    fetch("/httpReadData", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(request)
+    })
+      .then(res => res.json())
+      .then(
+        function(json) {
+          readData["response"] = JSON.stringify(json, null, 3);
+          console.log(json);
+          this.setState({ readData: readData });
+        }.bind(this)
+      );
     e.preventDefault();
   };
 
@@ -489,6 +527,40 @@ class App extends Component {
           <b>Subscribe Response:</b>
           <Panel className="ScrollStyle">
               <p>{this.state.subscribe.response}</p>
+          </Panel>
+        </Panel>
+        <Panel key={3} collapsible header="Read Data">
+          <form>
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Thing UUID</td>
+                  <td>
+                    <FormControl
+                      type="text"
+                      value={this.state.readData.thingUuid}
+                      name="thingUuid"
+                      onChange={this._onChangeReadData}
+                    />
+                  </td>
+                  <td>Thing UUID</td>
+                </tr>
+              </tbody>
+            </Table>
+            <Button bsStyle="primary" onClick={this.readData}>
+              Read Data
+            </Button>
+          </form>
+          <b>Read Data Response:</b>
+          <Panel>
+                <p>{this.state.readData.response}</p>
           </Panel>
         </Panel>
       </div>

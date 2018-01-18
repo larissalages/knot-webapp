@@ -15,6 +15,7 @@ var sendConfig = require('./routes/sendConfig');
 var httpGetData = require('./routes/httpGetData');
 var httpSetData = require('./routes/httpSetData');
 var httpSendConfig = require('./routes/httpSendConfig');
+var httpReadData = require('./routes/httpReadData');
 
 var app = express();
 
@@ -46,6 +47,7 @@ app.use('/httpGetData', httpGetData);
 app.use('/httpSetData', httpSetData);
 app.use('/httpSendConfig', httpSendConfig);
 app.use('/httpSubscribe', httpSubscribe);
+app.use('/httpReadData', httpReadData);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
