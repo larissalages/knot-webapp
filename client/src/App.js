@@ -199,7 +199,7 @@ class App extends Component {
       port: this.state.defaultConfigs.port,
       gateway: this.state.defaultConfigs.ownerUuid
     };
-    fetch("/httpGetDevices", {
+    fetch("/getDevices", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -211,7 +211,17 @@ class App extends Component {
       .then(
         function(json) {
           var resp = [];
-          console.log(json);
+          //Websockets
+          for (var i in json) {
+            var device = json[i];
+            resp[i] = {
+              uuid : device.uuid,
+              online : device.online,
+              name : device.name,
+              schema : device.schema
+            }
+          }
+          /* HTTP
           for (var i in json.body.devices) {
             var device = json.body.devices[i];
             resp[i] = {
@@ -220,7 +230,7 @@ class App extends Component {
               name : device.name,
               schema : device.schema
             }
-          }
+          }*/
           getDevices["response"] = JSON.stringify(resp, null, 3);
           this.setState({ getDevices: getDevices });
         }.bind(this)
