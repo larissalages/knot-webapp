@@ -5,9 +5,18 @@ This is a minimalist webapp built with Node.js/Express and React. You can use it
 There are five operations defined:
 - Get Data: Will query an specific device's sensor for its current value. In order to see the returned value you must send a read data request.
 - Set Data: Use this operation to send a value to a device's actuator
+   - Works with SocketIO, via fog or cloud. Using Owner's credentials
 - Set Config: Change the how a device will report the value of a sensor.
+   - Works with SocketIO, via fog or cloud. Using Owner's credentials
 - Get Devices: Query for all devices belonging to a gateway
+  -  Works with SocketIO, via fog or cloud. Using Owner's credentials
 - Subscribe: subscribe for a device's messages.
+  - HTTP: known to work using the thing's UUID/TOKEN to authenticate via fog
+  - SocketIO: Work In progress
+- Read data: get the last 10 values reported by a device.
+  - Works with HTTP via fog or Cloud
+  - SocketIO: Work in Progress
+
 
 
 In order to run:
